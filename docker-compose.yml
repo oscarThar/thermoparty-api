@@ -1,0 +1,39 @@
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: thermoparty-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
+      MYSQL_DATABASE: ${DB_NAME:-thermoparty}
+      MYSQL_USER: ${DB_USER:-thermoparty_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-thermoparty_pass}
+    ports:
+      - "3306:3306"
+    volumes:
+      - thermoparty_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-rootsecret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Interfaz web para ver/editar la DB en desarrollo
+  # Acceder en http://localhost:8080
+  adminer:
+    image: adminer:latest
+    container_name: thermoparty-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles:
+      - dev  # solo se levanta con: docker compose --profile dev up
+
+volumes:
+  thermoparty_db_data:
+    driver: local

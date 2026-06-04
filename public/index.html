@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ThermoParty</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--green:#00A651;--green-dark:#007A3D;--green-light:#E8F7EE;--green-mid:#4DC882;--warm:#FFF8F0;--orange:#FF6B35;--yellow:#FFD166;--white:#FFFFFF;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-400:#9CA3AF;--gray-600:#4B5563;--gray-800:#1F2937;--red:#EF4444;--blue:#3B82F6;--shadow-sm:0 1px 3px rgba(0,0,0,0.08);--shadow:0 4px 16px rgba(0,0,0,0.10);--shadow-lg:0 8px 32px rgba(0,0,0,0.14);--radius:16px;--radius-sm:10px;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Nunito Sans',sans-serif;background:var(--warm);min-height:100vh;color:var(--gray-800);}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif;}
+#app{display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--green);color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,166,81,0.3);}
+.topbar-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.2rem;}
+.topbar-user{font-size:.8rem;opacity:.9;text-align:right;line-height:1.3;}
+.content{flex:1;padding:16px;max-width:600px;margin:0 auto;width:100%;}
+.bottom-nav{background:#fff;border-top:2px solid var(--gray-100);display:flex;position:sticky;bottom:0;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,0.08);}
+.nav-btn{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.68rem;font-family:'Nunito',sans-serif;font-weight:700;color:var(--gray-400);border:none;background:none;cursor:pointer;transition:.2s;}
+.nav-btn.active{color:var(--green);}
+.nav-btn .nav-icon{font-size:1.4rem;}
+.card{background:#fff;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);margin-bottom:12px;}
+.card-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;color:var(--gray-800);}
+.section-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.1rem;margin:20px 0 12px;color:var(--gray-800);}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:.72rem;font-weight:700;font-family:'Nunito',sans-serif;}
+.badge-green{background:var(--green-light);color:var(--green-dark);}
+.badge-yellow{background:#FFF9C4;color:#B45309;}
+.badge-orange{background:#FFF0E6;color:#C2410C;}
+.badge-red{background:#FEE2E2;color:#B91C1C;}
+.badge-blue{background:#EFF6FF;color:#1D4ED8;}
+.badge-gray{background:var(--gray-100);color:var(--gray-600);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-weight:700;font-size:.9rem;border:none;cursor:pointer;transition:.15s;text-decoration:none;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--green);color:#fff;}
+.btn-primary:hover{background:var(--green-dark);}
+.btn-secondary{background:var(--gray-100);color:var(--gray-800);}
+.btn-danger{background:#FEE2E2;color:#B91C1C;}
+.btn-orange{background:#FFF0E6;color:#C2410C;}
+.btn-sm{padding:6px 12px;font-size:.8rem;border-radius:8px;}
+.btn-block{width:100%;margin-bottom:8px;}
+.form-group{margin-bottom:14px;}
+label{display:block;font-weight:700;font-size:.82rem;color:var(--gray-600);margin-bottom:5px;font-family:'Nunito',sans-serif;}
+input,select,textarea{width:100%;padding:11px 13px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:'Nunito Sans',sans-serif;font-size:.95rem;color:var(--gray-800);background:#fff;transition:.15s;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--green);}
+textarea{resize:vertical;min-height:80px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.radio-group{display:flex;flex-wrap:wrap;gap:8px;}
+.radio-option{display:flex;align-items:center;gap:6px;padding:8px 14px;border:2px solid var(--gray-200);border-radius:99px;cursor:pointer;font-size:.85rem;font-weight:600;transition:.15s;}
+.radio-option input[type=radio]{width:auto;}
+.radio-option.selected{border-color:var(--green);background:var(--green-light);color:var(--green-dark);}
+.check-card{display:flex;align-items:center;gap:10px;padding:12px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);cursor:pointer;margin-bottom:8px;transition:.15s;}
+.check-card.selected{border-color:var(--green);background:var(--green-light);}
+.check-card input[type=checkbox]{width:auto;}
+.wish-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
+.wish-card{border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;cursor:pointer;transition:.15s;user-select:none;}
+.wish-card.selected{border-color:var(--green);background:var(--green-light);}
+.wish-card .wish-emoji{font-size:1.8rem;}
+.wish-card .wish-text{font-size:.72rem;font-weight:700;margin-top:4px;color:var(--gray-600);}
+.wish-card.selected .wish-text{color:var(--green-dark);}
+.list-item{background:#fff;border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;box-shadow:var(--shadow-sm);border-left:4px solid var(--gray-200);}
+.list-item.green{border-left-color:var(--green);}
+.list-item.orange{border-left-color:var(--orange);}
+.list-item.yellow{border-left-color:var(--yellow);}
+.list-item.blue{border-left-color:var(--blue);}
+.list-item.red{border-left-color:var(--red);}
+.list-item-title{font-weight:700;font-family:'Nunito',sans-serif;font-size:.95rem;}
+.list-item-sub{font-size:.8rem;color:var(--gray-600);margin-top:2px;}
+.list-item-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+#login-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 60%,var(--green-mid) 100%);}
+.login-logo{font-family:'Nunito',sans-serif;font-weight:900;font-size:2.2rem;color:#fff;letter-spacing:-1px;margin-bottom:6px;}
+.login-sub{color:rgba(255,255,255,.75);font-size:.9rem;margin-bottom:32px;}
+.login-card{background:#fff;border-radius:20px;padding:24px;width:100%;max-width:360px;box-shadow:var(--shadow-lg);}
+.login-tabs{display:flex;border-radius:10px;overflow:hidden;border:2px solid var(--gray-200);margin-bottom:20px;}
+.login-tab{flex:1;padding:9px;text-align:center;font-family:'Nunito',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;color:var(--gray-600);transition:.15s;}
+.login-tab.active{background:var(--green);color:#fff;}
+.alert{border-radius:var(--radius-sm);padding:14px;margin-bottom:12px;font-size:.88rem;}
+.alert-warning{background:#FFF9C4;border:1px solid #FCD34D;color:#92400E;}
+.alert-danger{background:#FEE2E2;border:1px solid #FCA5A5;color:#7F1D1D;}
+.alert-success{background:var(--green-light);border:1px solid #6EE7A4;color:var(--green-dark);}
+.alert-info{background:#EFF6FF;border:1px solid #93C5FD;color:#1E3A8A;}
+.alert-title{font-weight:700;font-family:'Nunito',sans-serif;margin-bottom:4px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;}
+.modal-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.1rem;margin-bottom:16px;}
+.table-wrap{overflow-x:auto;margin-bottom:8px;}
+table{width:100%;border-collapse:collapse;font-size:.8rem;}
+th{background:var(--green);color:#fff;padding:8px 10px;text-align:left;font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;}
+th:hover{background:var(--green-dark);}
+td{padding:8px 10px;border-bottom:1px solid var(--gray-100);}
+tr:hover td{background:var(--gray-50);}
+.qr-container{display:flex;flex-direction:column;align-items:center;padding:16px;background:var(--gray-50);border-radius:var(--radius-sm);margin:8px 0;}
+.steps{display:flex;gap:0;margin-bottom:20px;}
+.step{flex:1;text-align:center;padding:8px 4px;font-size:.75rem;font-weight:700;font-family:'Nunito',sans-serif;color:var(--gray-400);border-bottom:3px solid var(--gray-200);}
+.step.active{color:var(--green);border-bottom-color:var(--green);}
+.step.done{color:var(--green-dark);border-bottom-color:var(--green);}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.stat-card{background:#fff;border-radius:var(--radius-sm);padding:14px;text-align:center;box-shadow:var(--shadow-sm);}
+.stat-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.8rem;color:var(--green);}
+.stat-label{font-size:.75rem;color:var(--gray-600);font-weight:600;margin-top:2px;}
+.filter-bar{display:flex;gap:8px;margin-bottom:12px;}
+.filter-bar input,.filter-bar select{flex:1;padding:9px 12px;font-size:.85rem;}
+.photo-preview{width:100%;max-height:240px;object-fit:cover;border-radius:var(--radius-sm);margin-top:8px;}
+.empty{text-align:center;padding:40px 20px;color:var(--gray-400);}
+.empty-icon{font-size:3rem;margin-bottom:8px;}
+.empty-text{font-weight:700;font-family:'Nunito',sans-serif;}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.chip{padding:3px 10px;background:var(--gray-100);border-radius:99px;font-size:.75rem;font-weight:600;color:var(--gray-600);}
+/* loading overlay */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.8);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.spinner{width:36px;height:36px;border:4px solid var(--gray-200);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Nunito',sans-serif;font-weight:700;color:var(--green-dark);font-size:.9rem;}
+.hidden{display:none!important;}
+.mt-8{margin-top:8px;}.mt-12{margin-top:12px;}.mt-16{margin-top:16px;}
+.text-center{text-align:center;}.text-sm{font-size:.82rem;}.text-green{color:var(--green);}.text-red{color:var(--red);}
+.font-bold{font-weight:700;}
+.divider{border:none;border-top:1px solid var(--gray-200);margin:16px 0;}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-logo">🍃 ThermoParty</div>
+  <div class="login-sub">Gestión de eventos Thermomix</div>
+  <div class="login-card">
+    <div class="login-tabs">
+      <div class="login-tab active" id="tab-id" onclick="switchLoginTab('id')">Agente / TL</div>
+      <div class="login-tab" id="tab-pass" onclick="switchLoginTab('pass')">Gerente / Head</div>
+    </div>
+    <div id="login-id-form">
+      <div class="form-group">
+        <label>Tu ID de agente</label>
+        <input type="text" id="login-id-input" placeholder="Ej: AG001" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+      </div>
+      <div id="login-id-preview" class="alert alert-success hidden"></div>
+      <button class="btn btn-primary btn-block" onclick="loginById()">Ingresar</button>
+    </div>
+    <div id="login-pass-form" class="hidden">
+      <div class="form-group"><label>Usuario</label><input type="text" id="login-user-input" placeholder="usuario"></div>
+      <div class="form-group"><label>Contraseña</label><input type="password" id="login-pass-input" placeholder="••••••"></div>
+      <button class="btn btn-primary btn-block" onclick="loginByPass()">Ingresar</button>
+    </div>
+    <div id="login-error" class="alert alert-danger hidden" style="margin-top:10px;"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="topbar">
+    <div class="topbar-title">🍃 ThermoParty</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="topbar-user" id="topbar-user"></div>
+      <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;" onclick="logout()">Salir</button>
+    </div>
+  </div>
+  <div class="content" id="main-content"></div>
+  <nav class="bottom-nav" id="bottom-nav"></nav>
+</div>
+
+<div id="modal-overlay" class="modal-overlay hidden" onclick="closeModalOverlay(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<div id="invitado-screen" class="hidden" style="min-height:100vh;background:var(--warm);">
+  <div style="background:var(--green);padding:20px 16px 16px;text-align:center;">
+    <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:1.6rem;color:#fff;">🍃 ThermoParty</div>
+    <div style="color:rgba(255,255,255,.8);font-size:.85rem;">Registro de invitado</div>
+  </div>
+  <div style="padding:16px;max-width:480px;margin:0 auto;" id="invitado-content"></div>
+</div>
+
+<div id="loading-overlay" class="loading-overlay hidden">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">Cargando...</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  CONFIG — URL base de la API
+//  En desarrollo: http://localhost:3000
+//  En producción: cambiar al dominio real
+// ══════════════════════════════════════════════════════════
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:3000'
+  : ''; // mismo origen en producción
+
+// ══════════════════════════════════════════════════════════
+//  API CLIENT
+// ══════════════════════════════════════════════════════════
+let currentUser = null;
+
+function getToken() { return sessionStorage.getItem('tp_token'); }
+function setToken(t) { sessionStorage.setItem('tp_token', t); }
+function clearToken() { sessionStorage.removeItem('tp_token'); }
+
+async function api(method, path, body = null, isPublic = false) {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = getToken();
+  if (token && !isPublic) headers['Authorization'] = `Bearer ${token}`;
+
+  const opts = { method, headers };
+  if (body) opts.body = JSON.stringify(body);
+
+  const res = await fetch(API_BASE + path, opts);
+
+  if (res.status === 401) {
+    clearToken();
+    currentUser = null;
+    showLoginScreen();
+    throw new Error('Sesión expirada');
+  }
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
+  return data;
+}
+
+const GET    = (path, pub) => api('GET', path, null, pub);
+const POST   = (path, body) => api('POST', path, body);
+const PATCH  = (path, body) => api('PATCH', path, body);
+const PUT    = (path, body) => api('PUT', path, body);
+
+// ── Cache liviano para D365 (no cambiar en sesión) ────────
+const _cache = {};
+async function cached(key, fn) {
+  if (_cache[key]) return _cache[key];
+  _cache[key] = await fn();
+  return _cache[key];
+}
+
+async function getD365Agentes()  { return cached('agentes', () => GET('/api/d365/agentes')); }
+async function getD365Equipos()  { return cached('equipos', () => GET('/api/d365/equipos')); }
+async function getConfigData()   { return cached('config',  () => GET('/api/config')); }
+
+// ── Helpers de presentación ───────────────────────────────
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
+}
+function today() { return new Date().toISOString().slice(0, 10); }
+function daysDiff(d) { return Math.floor((Date.now() - new Date(d)) / 86400000); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+// ── Loading ───────────────────────────────────────────────
+function showLoading(msg = 'Cargando...') {
+  document.getElementById('loading-text').textContent = msg;
+  document.getElementById('loading-overlay').classList.remove('hidden');
+}
+function hideLoading() { document.getElementById('loading-overlay').classList.add('hidden'); }
+
+// ── Toast de error ────────────────────────────────────────
+function showError(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#B91C1C;color:#fff;padding:10px 20px;border-radius:10px;z-index:9999;font-family:Nunito,sans-serif;font-weight:700;font-size:.88rem;box-shadow:0 4px 16px rgba(0,0,0,.2)';
+  t.textContent = '⚠️ ' + msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+// ══════════════════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════════════════
+function switchLoginTab(tab) {
+  document.getElementById('tab-id').classList.toggle('active', tab==='id');
+  document.getElementById('tab-pass').classList.toggle('active', tab==='pass');
+  document.getElementById('login-id-form').classList.toggle('hidden', tab!=='id');
+  document.getElementById('login-pass-form').classList.toggle('hidden', tab!=='pass');
+  document.getElementById('login-error').classList.add('hidden');
+}
+
+document.getElementById('login-id-input').addEventListener('input', async function() {
+  const id = this.value.trim().toUpperCase();
+  if (id.length < 3) { document.getElementById('login-id-preview').classList.add('hidden'); return; }
+  try {
+    const agentes = await getD365Agentes();
+    const ag = agentes.find(a => a.id.toUpperCase() === id);
+    const prev = document.getElementById('login-id-preview');
+    if (ag) {
+      prev.innerHTML = `<strong>${ag.nombre}</strong><br>${ag.rol || 'Agente'} · ${ag.equipoNombre || '—'}`;
+      prev.classList.remove('hidden');
+    } else {
+      prev.classList.add('hidden');
+    }
+  } catch { /* silencioso */ }
+});
+
+async function loginById() {
+  const id = document.getElementById('login-id-input').value.trim().toUpperCase();
+  if (!id) { showLoginError('Ingresá tu ID'); return; }
+  showLoading('Verificando...');
+  try {
+    const res = await POST('/api/auth/login-colaborador', { id });
+   console.log(res, "que tiene res en el html")
+    setToken(res.token);
+    currentUser = res.user;
+    afterLogin();
+  } catch (err) {
+    showLoginError(err.message);
+  } finally { hideLoading(); }
+}
+
+async function loginByPass() {
+  const usuario = document.getElementById('login-user-input').value.trim();
+  const password = document.getElementById('login-pass-input').value;
+  if (!usuario || !password) { showLoginError('Completá usuario y contraseña'); return; }
+  showLoading('Verificando...');
+  try {
+    const res = await POST('/api/auth/login-backoffice', { usuario, password });
+    setToken(res.token);
+    currentUser = res.user;
+    afterLogin();
+  } catch (err) {
+    showLoginError(err.message);
+  } finally { hideLoading(); }
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+function showLoginScreen() {
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+
+function afterLogin() {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('topbar-user').innerHTML =
+    `<strong>${currentUser.nombre}</strong><br>${currentUser.rol}`;
+  buildNav();
+  checkVencidas();
+}
+
+function logout() {
+  clearToken();
+  currentUser = null;
+  Object.keys(_cache).forEach(k => delete _cache[k]);
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('login-id-input').value = '';
+  document.getElementById('login-id-preview').classList.add('hidden');
+  document.getElementById('login-error').classList.add('hidden');
+}
+
+// ══════════════════════════════════════════════════════════
+//  NAVEGACIÓN
+// ══════════════════════════════════════════════════════════
+let currentTab = null;
+
+function buildNav() {
+  const rol = currentUser.rol;
+  const tabs = [];
+  if (rol==='Agente'||rol==='Team Leader') {
+    tabs.push({id:'prospectos',icon:'📋',label:'Prospectos'});
+    tabs.push({id:'parties',icon:'🎉',label:'ThermoParties'});
+  }
+  if (rol==='Gerente'||rol==='Head Comercial') tabs.push({id:'panel',icon:'📦',label:'Panel'});
+  if (rol==='Team Leader'||rol==='Gerente'||rol==='Head Comercial') tabs.push({id:'rankings',icon:'🏆',label:'Rankings'});
+  tabs.push({id:'reportes',icon:'📊',label:'Reportes'});
+  if (rol==='Head Comercial') tabs.push({id:'config',icon:'⚙️',label:'Config'});
+
+  document.getElementById('bottom-nav').innerHTML = tabs.map(t =>
+    `<button class="nav-btn" id="nav-${t.id}" onclick="goTab('${t.id}')">
+      <span class="nav-icon">${t.icon}</span>${t.label}
+    </button>`
+  ).join('');
+
+  goTab(tabs[0].id);
+}
+
+function goTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('nav-' + tab);
+  if (btn) btn.classList.add('active');
+  const el = document.getElementById('main-content');
+  el.innerHTML = `<div class="empty"><div class="spinner" style="margin:40px auto;"></div></div>`;
+  switch(tab) {
+    case 'prospectos': renderProspectos(el); break;
+    case 'parties':    renderParties(el); break;
+    case 'panel':      renderPanel(el); break;
+    case 'rankings':   renderRankings(el); break;
+    case 'reportes':   renderReportes(el); break;
+    case 'config':     renderConfig(el); break;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════════════════
+function openModal(html) {
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+function closeModalOverlay(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
+
+// ══════════════════════════════════════════════════════════
+//  CHECK PARTIES VENCIDAS
+// ══════════════════════════════════════════════════════════
+async function checkVencidas() {
+  if (currentUser.rol !== 'Agente' && currentUser.rol !== 'Team Leader') return;
+  try {
+    const all = await GET(`/api/parties?estado=Agendada`);
+    const vencidas = all.filter(p =>
+      p.agente_id === currentUser.id && p.fecha && p.fecha < today()
+    );
+    if (!vencidas.length) return;
+
+    let idx = 0;
+    function showNext() {
+      if (idx >= vencidas.length) return;
+      const party = vencidas[idx++];
+      const invitados = Array.isArray(party.invitados)
+        ? (typeof party.invitados === 'string' ? JSON.parse(party.invitados) : party.invitados)
+        : [];
+      const tieneInvitados = invitados.length > 0;
+      openModal(`
+        <div class="alert alert-warning"><div class="alert-title">⚠️ ThermoParty vencida</div>
+          La ThermoParty de <strong>${party.anfitrion_nombre}</strong> (${fmtDate(party.fecha)}) pasó la fecha sin cerrarse.
+        </div>
+        ${tieneInvitados ? `
+          <p class="text-sm" style="margin-bottom:16px;">Hay invitados registrados. ¿Querés cerrarla ahora?</p>
+          <button class="btn btn-primary btn-block" onclick="closeModal();goTab('parties');setTimeout(()=>openRealizar('${party.id}'),300)">Ir al cierre</button>
+          <button class="btn btn-secondary btn-block" onclick="closeModal();showNext()">Después</button>
+        ` : `
+          <p class="text-sm" style="margin-bottom:12px;">No hay invitados registrados. ¿Qué pasó?</p>
+          <button class="btn btn-block" style="background:#FFF9C4;color:#92400E;margin-bottom:8px;" onclick="modalReagendar('${party.id}')">📅 Se reagendó</button>
+          <button class="btn btn-block" style="background:#FEE2E2;color:#B91C1C;margin-bottom:8px;" onclick="modalCancelar('${party.id}')">❌ Se canceló</button>
+          <button class="btn btn-secondary btn-block" onclick="closeModal();showNext()">Otro motivo</button>
+        `}
+      `);
+    }
+    window._showNextVencida = showNext;
+    showNext();
+  } catch { /* no bloquear el login */ }
+}
+
+function modalReagendar(id) {
+  openModal(`
+    <div class="modal-title">📅 Reagendar ThermoParty</div>
+    <div class="form-group"><label>Nueva fecha</label><input type="date" id="nf-fecha" min="${today()}"></div>
+    <button class="btn btn-primary btn-block" onclick="confirmarReagendar('${id}')">Guardar</button>
+    <button class="btn btn-secondary btn-block" onclick="closeModal()">Cancelar</button>
+  `);
+}
+async function confirmarReagendar(id) {
+  const fecha = document.getElementById('nf-fecha').value;
+  if (!fecha) { alert('Ingresá una fecha'); return; }
+  await PATCH(`/api/parties/${id}/reagendar`, { fecha });
+  closeModal();
+  if (window._showNextVencida) window._showNextVencida();
+}
+
+function modalCancelar(id) {
+  openModal(`
+    <div class="modal-title">❌ Cancelar ThermoParty</div>
+    <div class="form-group"><label>Motivo (opcional)</label><textarea id="mc-motivo"></textarea></div>
+    <button class="btn btn-danger btn-block" onclick="confirmarCancelar('${id}')">Confirmar cancelación</button>
+    <button class="btn btn-secondary btn-block" onclick="closeModal()">Volver</button>
+  `);
+}
+async function confirmarCancelar(id) {
+  const motivo = document.getElementById('mc-motivo').value;
+  await PATCH(`/api/parties/${id}/cancelar`, { motivo });
+  closeModal();
+  if (window._showNextVencida) window._showNextVencida();
+}
+
+// ══════════════════════════════════════════════════════════
+//  MÓDULO 0 — PROSPECTOS
+// ══════════════════════════════════════════════════════════
+async function renderProspectos(el) {
+  try {
+    const prospectos = await GET('/api/prospectos');
+    const mine = prospectos.filter(p => p.agente_id === currentUser.id);
+    const isTL = currentUser.rol === 'Team Leader';
+
+    el.innerHTML = `
+      <div class="section-title">📋 Prospectos</div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num">${mine.length}</div><div class="stat-label">Mis prospectos</div></div>
+        <div class="stat-card"><div class="stat-num">${mine.filter(p=>p.estado==='Por contactar').length}</div><div class="stat-label">Por contactar</div></div>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="openAgregarProspecto()">+ Nuevo prospecto</button>
+      ${isTL ? `<button class="btn btn-secondary btn-block mt-8" onclick="openAgregarAgente()">+ Agregar agente al equipo</button>` : ''}
+      <div class="filter-bar mt-12">
+        <input type="text" id="filtro-prospectos" placeholder="Buscar..." oninput="filtrarProspectos()">
+        <select id="filtro-estado-p" onchange="filtrarProspectos()">
+          <option value="">Todos</option><option>Por contactar</option><option>Contactado</option>
+          <option>No interesado</option><option>ThermoParty realizada</option>
+        </select>
+      </div>
+      <div id="lista-prospectos"></div>
+    `;
+
+    window._prospectosList = prospectos;
+    filtrarProspectos();
+  } catch (err) {
+    el.innerHTML = `<div class="alert alert-danger">Error al cargar prospectos: ${err.message}</div>`;
+  }
+}
+
+function filtrarProspectos() {
+  const filtro = (document.getElementById('filtro-prospectos')||{}).value?.toLowerCase() || '';
+  const estado = (document.getElementById('filtro-estado-p')||{}).value || '';
+  let lista = (window._prospectosList || []);
+  if (filtro) lista = lista.filter(p => p.nombre?.toLowerCase().includes(filtro) || p.zona?.toLowerCase().includes(filtro));
+  if (estado) lista = lista.filter(p => p.estado === estado);
+  lista.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+  const el = document.getElementById('lista-prospectos');
+  if (!el) return;
+  if (!lista.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Sin prospectos</div></div>'; return; }
+
+  const colorMap = { 'Por contactar':'orange','Contactado':'blue','No interesado':'gray','ThermoParty realizada':'green' };
+  const badgeMap = { 'orange':'badge-orange','blue':'badge-blue','gray':'badge-gray','green':'badge-green' };
+  el.innerHTML = lista.map(p => {
+    const color = colorMap[p.estado] || 'gray';
+    const esPropio = p.agente_id === currentUser.id;
+    const agenteChip = !esPropio ? `<span class="chip">${p.agente_nombre || '—'}</span>` : '';
+    return `<div class="list-item ${color}">
+      <div class="list-item-title">${p.nombre}</div>
+      <div class="list-item-sub">${p.zona || '—'} · ${p.modelo_tm || 'Sin TM'}</div>
+      <div class="chip-row"><span class="badge ${badgeMap[color]}">${p.estado}</span>${agenteChip}</div>
+      <div class="list-item-actions">
+        ${esPropio ? `<button class="btn btn-sm btn-secondary" onclick="openAgregarProspecto('${p.id}')">✏️ Editar</button>` : ''}
+        ${(esPropio) && p.estado !== 'ThermoParty realizada'
+          ? `<button class="btn btn-sm btn-primary" onclick="agendarDesdeProspecto('${p.id}')">🎉 Agendar ThermoParty</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openAgregarProspecto(pid = null) {
+  const p = pid ? (window._prospectosList || []).find(x => x.id === pid) : null;
+  openModal(`
+    <div class="modal-title">${p ? 'Editar' : 'Nuevo'} prospecto</div>
+    <div class="form-group"><label>Nombre completo *</label><input id="p-nombre" value="${p ? p.nombre : ''}" placeholder="Nombre y apellido"></div>
+    <div class="form-group"><label>Teléfono</label><input id="p-tel" value="${p ? p.telefono || '' : ''}" type="tel"></div>
+    <div class="form-group"><label>Zona / Barrio</label><input id="p-zona" value="${p ? p.zona || '' : ''}"></div>
+    <div class="form-group"><label>Modelo Thermomix</label>
+      <select id="p-tm"><option value="">No tiene</option>
+        <option ${p&&p.modelo_tm==='TM5'?'selected':''}>TM5</option>
+        <option ${p&&p.modelo_tm==='TM6'?'selected':''}>TM6</option>
+        <option ${p&&p.modelo_tm==='TM7'?'selected':''}>TM7</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Estado</label>
+      <select id="p-estado">
+        <option ${!p||p.estado==='Por contactar'?'selected':''}>Por contactar</option>
+        <option ${p&&p.estado==='Contactado'?'selected':''}>Contactado</option>
+        <option ${p&&p.estado==='No interesado'?'selected':''}>No interesado</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="guardarProspecto('${pid||''}')">Guardar</button>
+    <button class="btn btn-secondary btn-block" onclick="closeModal()">Cancelar</button>
+  `);
+}
+
+async function guardarProspecto(pid) {
+  const nombre = document.getElementById('p-nombre').value.trim();
+  if (!nombre) { alert('Ingresá el nombre'); return; }
+  const body = {
+    nombre,
+    telefono: document.getElementById('p-tel').value.trim(),
+    zona: document.getElementById('p-zona').value.trim(),
+    modelo_tm: document.getElementById('p-tm').value,
+    estado: document.getElementById('p-estado').value
+  };
+  showLoading('Guardando...');
+  try {
+    if (pid) {
+      await PATCH(`/api/prospectos/${pid}`, body);
+    } else {
+      await POST('/api/prospectos', body);
+    }
+    closeModal();
+    await renderProspectos(document.getElementById('main-content'));
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+async function agendarDesdeProspecto(pid) {
+  closeModal();
+  goTab('parties');
+  const p = (window._prospectosList || []).find(x => x.id === pid);
+  setTimeout(() => openAgendarParty(null, p), 300);
+}
+
+function openAgregarAgente() {
+  openModal(`
+    <div class="modal-title">➕ Agregar agente al equipo</div>
+    <div class="form-group"><label>ID de la agente</label><input id="new-ag-id" placeholder="AG999" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="form-group"><label>Nombre completo</label><input id="new-ag-nombre" placeholder="Nombre y apellido"></div>
+    <p class="text-sm" style="color:var(--gray-600);margin-bottom:12px;">El equipo se asignará automáticamente al tuyo.</p>
+    <button class="btn btn-primary btn-block" onclick="closeModal();alert('Función disponible una vez conectado el módulo de usuarios de D365')">Agregar</button>
+    <button class="btn btn-secondary btn-block" onclick="closeModal()">Cancelar</button>
+  `);
+}
+
+// ══════════════════════════════════════════════════════════
+//  MÓDULO 1 — THERMOPARTIES
+// ══════════════════════════════════════════════════════════
+async function renderParties(el) {
+  try {
+    const parties = await GET('/api/parties');
+    const esAgente = currentUser.rol === 'Agente' || currentUser.rol === 'Team Leader';
+    const esGerente = currentUser.rol === 'Gerente' || currentUser.rol === 'Head Comercial';
+
+    el.innerHTML = `
+      <div class="section-title">🎉 ThermoParties</div>
+      ${esAgente ? `<button class="btn btn-primary btn-block" onclick="openAgendarParty()">+ Nueva ThermoParty</button>` : ''}
+      <div class="filter-bar mt-12">
+        <input type="text" id="filtro-parties" placeholder="Buscar anfitrión..." oninput="filtrarParties()">
+        <select id="filtro-estado-party" onchange="filtrarParties()">
+          <option value="">Todos los estados</option>
+          <option>Agendada</option><option>Regalo entregado</option>
+          <option>Realizada y cerrada</option><option>Con ventas posteriores</option><option>No realizada</option>
+        </select>
+      </div>
+      <div id="lista-parties"></div>
+    `;
+
+    window._partiesList = parties;
+    filtrarParties();
+  } catch (err) {
+    el.innerHTML = `<div class="alert alert-danger">Error al cargar ThermoParties: ${err.message}</div>`;
+  }
+}
+
+function filtrarParties() {
+  const filtro = (document.getElementById('filtro-parties')||{}).value?.toLowerCase() || '';
+  const estado = (document.getElementById('filtro-estado-party')||{}).value || '';
+  let lista = (window._partiesList || []);
+  if (filtro) lista = lista.filter(p => p.anfitrion_nombre?.toLowerCase().includes(filtro));
+  if (estado) lista = lista.filter(p => p.estado === estado);
+  lista.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+
+  const el = document.getElementById('lista-parties');
+  if (!el) return;
+  if (!lista.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">🎉</div><div class="empty-text">Sin ThermoParties</div></div>'; return; }
+
+  const colorMap = {'Agendada':'yellow','Regalo entregado':'blue','Realizada y cerrada':'green','Con ventas posteriores':'green','No realizada':'red'};
+  const badgeMap = {'yellow':'badge-yellow','blue':'badge-blue','green':'badge-green','red':'badge-red'};
+  const esGerente = currentUser.rol === 'Gerente' || currentUser.rol === 'Head Comercial';
+
+  el.innerHTML = lista.map(p => {
+    const color = colorMap[p.estado] || 'gray';
+    const esPropia = p.agente_id === currentUser.id;
+    const agenteChip = !esPropia ? `<span class="chip">${p.agente_nombre || '—'}</span>` : '';
+    return `<div class="list-item ${color}">
+      <div class="list-item-title">🏠 ${p.anfitrion_nombre}</div>
+      <div class="list-item-sub">${fmtDate(p.fecha)} · ${p.menu || '—'} · ${p.regalo || '—'}</div>
+      <div class="chip-row"><span class="badge ${badgeMap[color]||'badge-gray'}">${p.estado}</span>${agenteChip}</div>
+      <div class="list-item-actions">
+        <button class="btn btn-sm btn-secondary" onclick="verParty('${p.id}')">👁 Ver</button>
+        ${esPropia && p.estado==='Regalo entregado' ? `<button class="btn btn-sm btn-primary" onclick="openRealizar('${p.id}')">📸 Realizar</button>` : ''}
+        ${esPropia && (p.estado==='Realizada y cerrada'||p.estado==='Con ventas posteriores') ? `<button class="btn btn-sm btn-orange" onclick="openVentasPosteriores('${p.id}')">💰 Venta posterior</button>` : ''}
+        ${esGerente && p.estado==='Agendada' ? `<button class="btn btn-sm btn-primary" onclick="confirmarEntregaRegalo('${p.id}')">🎁 Entregar regalo</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── AGENDAR ────────────────────────────────────────────────
+async function openAgendarParty(pid = null, prospecto = null) {
+  showLoading('Cargando...');
+  let menus = ['Peruano','Pizza','Brunch'];
+  let regalos = ['Bolso de transporte TM6','Caja de cubiertos'];
+  try {
+    const cfg = await getConfigData();
+    if (cfg.menus) menus = Array.isArray(cfg.menus) ? cfg.menus : JSON.parse(cfg.menus);
+    if (cfg.regalos) regalos = Array.isArray(cfg.regalos) ? cfg.regalos : JSON.parse(cfg.regalos);
+  } catch {}
+  hideLoading();
+
+  const p = pid ? (window._partiesList || []).find(x => x.id === pid) : null;
+  openModal(`
+    <div class="modal-title">${p ? 'Editar' : 'Nueva'} ThermoParty</div>
+    <div class="form-group"><label>Nombre del anfitrión *</label><input id="tp-nombre" value="${p?p.anfitrion_nombre:prospecto?prospecto.nombre:''}" placeholder="Nombre y apellido"></div>
+    <div class="form-group"><label>Teléfono *</label><input id="tp-tel" value="${p?p.telefono:prospecto?prospecto.telefono||'':''}" type="tel"></div>
+    <div class="form-group"><label>OV de compra</label>
+      <div style="display:flex;gap:8px;">
+        <input id="tp-ov" value="${p?p.ov||'':''}" placeholder="Número de OV" style="flex:1">
+        <button class="btn btn-sm btn-secondary" onclick="validarOV()">Verificar</button>
+      </div>
+      <div id="ov-result" class="hidden" style="margin-top:6px;font-size:.8rem;"></div>
+    </div>
+    <div class="form-group"><label>Modelo Thermomix</label>
+      <select id="tp-tm"><option value="">Seleccionar</option>
+        <option ${p&&p.modelo_tm==='TM5'?'selected':''}>TM5</option>
+        <option ${p&&p.modelo_tm==='TM6'?'selected':''}>TM6</option>
+        <option ${p&&p.modelo_tm==='TM7'?'selected':''}>TM7</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Fecha del evento *</label><input id="tp-fecha" type="date" value="${p?p.fecha:''}" min="${today()}"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Calle y número</label><input id="tp-calle" value="${p?p.calle||'':''}" placeholder="Av. Corrientes 1234"></div>
+      <div class="form-group"><label>Localidad</label><input id="tp-localidad" value="${p?p.localidad||'':''}" placeholder="CABA"></div>
+    </div>
+    <div class="form-group"><label>Menú</label>
+      <select id="tp-menu">${menus.map(m=>`<option ${p&&p.menu===m?'selected':''}>${m}</option>`).join('')}</select>
+    </div>
+    <div class="form-group"><label>Regalo elegido</label>
+      <select id="tp-regalo">${regalos.map(r=>`<option ${p&&p.regalo===r?'selected':''}>${r}</option>`).join('')}</select>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="guardarParty('${pid||''}','${prospecto?prospecto.id:''}')">Guardar</button>
+    <button class="btn btn-secondary btn-block" onclick="closeModal()">Cancelar</button>
+  `);
+}
+
+async function validarOV() {
+  const ov = document.getElementById('tp-ov').value.trim();
+  if (!ov) { alert('Ingresá el número de OV'); return; }
+  const el = document.getElementById('ov-result');
+  el.innerHTML = '⏳ Verificando...'; el.classList.remove('hidden');
+  try {
+    const res = await GET(`/api/d365/validar-ov/${ov}`);
+    if (res.valida) {
+      el.innerHTML = `<span style="color:var(--green)">✅ OV válida · ${res.nombre || ''}</span>`;
+    } else {
+      el.innerHTML = `<span style="color:var(--red)">❌ ${res.mensaje}</span>`;
+    }
+  } catch {
+    el.innerHTML = `<span style="color:var(--gray-400)">⚠️ No se pudo verificar con D365</span>`;
+  }
+}
+
+async function guardarParty(pid, prospectoId) {
+  const nombre = document.getElementById('tp-nombre').value.trim();
+  const tel = document.getElementById('tp-tel').value.trim();
+  const fecha = document.getElementById('tp-fecha').value;
+  if (!nombre || !tel || !fecha) { alert('Completá los campos obligatorios'); return; }
+
+  const body = {
+    anfitrion_nombre: nombre,
+    telefono: tel,
+    ov: document.getElementById('tp-ov').value.trim(),
+    modelo_tm: document.getElementById('tp-tm').value,
+    fecha,
+    calle: document.getElementById('tp-calle').value.trim(),
+    localidad: document.getElementById('tp-localidad').value.trim(),
+    menu: document.getElementById('tp-menu').value,
+    regalo: document.getElementById('tp-regalo').value,
+    prospecto_id: prospectoId || undefined
+  };
+
+  showLoading('Guardando...');
+  try {
+    if (pid) {
+      await PATCH(`/api/parties/${pid}`, body);
+    } else {
+      await POST('/api/parties', body);
+    }
+    closeModal();
+    await renderParties(document.getElementById('main-content'));
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+// ── VER PARTY ──────────────────────────────────────────────
+async function verParty(pid) {
+  showLoading();
+  try {
+    const p = await GET(`/api/parties/${pid}`);
+    const invitados = Array.isArray(p.invitados) ? p.invitados : [];
+    const ventas = Array.isArray(p.ventas) ? p.ventas : [];
+    openModal(`
+      <div class="modal-title">🏠 ${p.anfitrion_nombre}</div>
+      <div class="chip-row" style="margin-bottom:12px;"><span class="badge ${p.estado==='Realizada y cerrada'||p.estado==='Con ventas posteriores'?'badge-green':p.estado==='Agendada'?'badge-yellow':p.estado==='Regalo entregado'?'badge-blue':'badge-red'}">${p.estado}</span></div>
+      <div class="card">
+        <div class="text-sm"><strong>Fecha:</strong> ${fmtDate(p.fecha)}</div>
+        <div class="text-sm mt-8"><strong>Dirección:</strong> ${p.calle||'—'}, ${p.localidad||'—'}</div>
+        <div class="text-sm mt-8"><strong>Teléfono:</strong> ${p.telefono}</div>
+        <div class="text-sm mt-8"><strong>OV:</strong> ${p.ov||'—'}</div>
+        <div class="text-sm mt-8"><strong>Modelo TM:</strong> ${p.modelo_tm||'—'}</div>
+        <div class="text-sm mt-8"><strong>Menú:</strong> ${p.menu||'—'}</div>
+        <div class="text-sm mt-8"><strong>Regalo:</strong> ${p.regalo||'—'}</div>
+        <div class="text-sm mt-8"><strong>Agente:</strong> ${p.agente_nombre||'—'}</div>
+      </div>
+      ${p.foto ? `<strong class="text-sm">Foto del evento:</strong><br><img src="${p.foto}" class="photo-preview"><a href="${p.foto}" download="thermoparty_${pid}.jpg" class="btn btn-sm btn-secondary mt-8">⬇ Descargar foto</a>` : ''}
+      <strong class="text-sm">Invitados (${invitados.length}):</strong>
+      ${invitados.length ? invitados.map(i=>`<div class="list-item mt-8">
+        <div class="list-item-title">${i.nombre}</div>
+        <div class="list-item-sub">${i.zona||'—'} · ${i.tiene_tm==='si'?`Tiene ${i.modelo_tm_invitado}`:'Sin TM'}</div>
+        ${i.quiere_comprar ? `<div class="text-sm mt-8">💚 Quiere comprar · ${i.forma_pago||'—'}</div>` : ''}
+      </div>`).join('') : '<div class="text-sm" style="color:var(--gray-400);margin-top:8px;">Sin invitados</div>'}
+      ${ventas.length ? `<hr class="divider"><strong class="text-sm">Ventas posteriores (${ventas.length}):</strong>${ventas.map(v=>`<div class="list-item green mt-8"><div class="list-item-title">${v.comprador_nombre||'—'}</div><div class="list-item-sub">OV: ${v.ov} · ${fmtDate(v.fecha)}</div></div>`).join('')}` : ''}
+      <button class="btn btn-secondary btn-block mt-12" onclick="closeModal()">Cerrar</button>
+    `);
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+// ── ENTREGAR REGALO ────────────────────────────────────────
+async function confirmarEntregaRegalo(pid) {
+  const p = (window._partiesList || []).find(x => x.id === pid);
+  if (!p) return;
+  openModal(`
+    <div class="modal-title">🎁 Confirmar entrega de regalo</div>
+    <div class="card">
+      <div class="text-sm"><strong>Anfitrión:</strong> ${p.anfitrion_nombre}</div>
+      <div class="text-sm mt-8"><strong>Agente:</strong> ${p.agente_nombre||'—'}</div>
+      <div class="text-sm mt-8"><strong>Fecha evento:</strong> ${fmtDate(p.fecha)}</div>
+      <div class="text-sm mt-8"><strong>Regalo:</strong> ${p.regalo}</div>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="doEntregarRegalo('${pid}')">✅ Confirmar entrega a la agente</button>
+    <button class="btn btn-secondary btn-block" onclick="closeModal()">Cancelar</button>
+  `);
+}
+async function doEntregarRegalo(pid) {
+  showLoading('Registrando entrega...');
+  try {
+    await PATCH(`/api/parties/${pid}/entregar-regalo`, {});
+    closeModal();
+    await renderParties(document.getElementById('main-content'));
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+// ══════════════════════════════════════════════════════════
+//  REALIZAR PARTY (3 pasos)
+// ══════════════════════════════════════════════════════════
+let realizarState = {};
+
+async function openRealizar(pid) {
+  showLoading();
+  try {
+    const p = await GET(`/api/parties/${pid}`);
+    const invitados = Array.isArray(p.invitados)
+      ? (typeof p.invitados[0] === 'string' ? p.invitados.map(i=>JSON.parse(i)) : p.invitados)
+      : [];
+    realizarState = { pid, paso: 1, foto: p.foto || null, invitados, party: p };
+    renderRealizarModal();
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+function renderRealizarModal() {
+  const { paso, foto, invitados, party } = realizarState;
+  openModal(`
+    <div class="modal-title">📸 Realizar ThermoParty</div>
+    <div class="steps">
+      <div class="step ${paso===1?'active':paso>1?'done':''}">1. Foto</div>
+      <div class="step ${paso===2?'active':paso>2?'done':''}">2. Invitados</div>
+      <div class="step ${paso===3?'active':''}">3. Cierre</div>
+    </div>
+    ${paso===1 ? renderPaso1() : paso===2 ? renderPaso2(party) : renderPaso3(party)}
+  `);
+}
+
+function renderPaso1() {
+  return `
+    <p class="text-sm" style="color:var(--gray-600);margin-bottom:12px;">Tomá una foto del evento.</p>
+    <input type="file" accept="image/*" capture="environment" onchange="handleFoto(event)" style="display:none" id="foto-input">
+    <button class="btn btn-primary btn-block" onclick="document.getElementById('foto-input').click()">📷 Sacar foto</button>
+    ${realizarState.foto ? `<img src="${realizarState.foto}" class="photo-preview mt-8"><p class="text-sm text-green mt-8">✅ Foto cargada</p>` : ''}
+    <button class="btn btn-primary btn-block mt-12" onclick="realizarState.paso=2;renderRealizarModal()">Siguiente →</button>
+    <button class="btn btn-secondary btn-block" onclick="closeModal()">Cancelar</button>
+  `;
+}
+
+function handleFoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const max = 800;
+      let w = img.width, h = img.height;
+      if (w > max || h > max) {
+        if (w > h) { h = Math.round(h * max / w); w = max; }
+        else { w = Math.round(w * max / h); h = max; }
+      }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      realizarState.foto = canvas.toDataURL('image/jpeg', 0.8);
+      renderRealizarModal();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderPaso2(p) {
+  const invitados = realizarState.invitados;
+  return `
+    <p class="text-sm" style="color:var(--gray-600);margin-bottom:12px;">Registrá los invitados y mostrales el QR.</p>
+    <div class="form-group">
+      <label>Agregar invitado</label>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="inv-nombre-input" placeholder="Nombre del invitado">
+        <button class="btn btn-primary btn-sm" onclick="agregarInvitado('${p.id}')">+</button>
+      </div>
+    </div>
+    <div id="lista-inv-modal">
+      ${invitados.map(inv => `
+        <div style="background:var(--gray-50);border-radius:var(--radius-sm);padding:10px;margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong class="text-sm">${inv.nombre}</strong>
+            <button class="btn btn-sm btn-secondary" onclick="mostrarQR('${p.id}','${inv.id}','${encodeURIComponent(inv.nombre)}')">📱 QR</button>
+          </div>
+          ${inv.completado
+            ? '<div class="badge badge-green mt-8">✅ Completó el formulario</div>'
+            : '<div class="text-sm" style="color:var(--gray-400);margin-top:4px;">Pendiente de escaneo</div>'}
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn btn-primary btn-block mt-12" onclick="realizarState.paso=3;renderRealizarModal()">Siguiente →</button>
+    <button class="btn btn-secondary btn-block" onclick="realizarState.paso=1;renderRealizarModal()">← Atrás</button>
+  `;
+}
+
+async function agregarInvitado(pid) {
+  const nombre = document.getElementById('inv-nombre-input').value.trim();
+  if (!nombre) return;
+  showLoading('Agregando invitado...');
+  try {
+    const inv = await POST(`/api/parties/${pid}/invitados`, { nombre });
+    realizarState.invitados.push({ ...inv, nombre });
+    renderRealizarModal();
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+function mostrarQR(pid, invId, nombreEnc) {
+  const nombre = decodeURIComponent(nombreEnc);
+  const base = window.location.origin + window.location.pathname;
+  const url = `${base}?vista=invitado&demo=${pid}&invitado=${invId}`;
+  openModal(`
+    <div class="modal-title">📱 QR para ${nombre}</div>
+    <p class="text-sm" style="color:var(--gray-600);margin-bottom:12px;">Mostrá este QR al invitado.</p>
+    <div class="qr-container" id="qr-box-modal"></div>
+    <p class="text-sm text-center mt-8" style="color:var(--gray-400);word-break:break-all;">${url}</p>
+    <button class="btn btn-secondary btn-block mt-12" onclick="renderRealizarModal()">← Volver</button>
+  `);
+  new QRCode(document.getElementById('qr-box-modal'), { text: url, width: 200, height: 200 });
+}
+
+function renderPaso3(p) {
+  const invitados = realizarState.invitados;
+  return `
+    <div class="form-group"><label>¿Cuánto duró el evento? (minutos)</label><input type="number" id="c-duracion" value="${p.duracion||''}" placeholder="90"></div>
+    <div class="form-group"><label>¿Cree que van a salir ventas?</label>
+      <div class="radio-group" id="c-ventas">
+        ${['Sí','Tal vez','No'].map(v=>`<label class="radio-option ${p.cree_ventas===v?'selected':''}"><input type="radio" name="c-v" value="${v}" ${p.cree_ventas===v?'checked':''} onchange="markRadio('c-ventas')">${v}</label>`).join('')}
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="check-card ${p.recluta_anfitrion?'selected':''}" id="chk-reclutar">
+        <input type="checkbox" id="c-reclutar" ${p.recluta_anfitrion?'checked':''} onchange="document.getElementById('chk-reclutar').classList.toggle('selected',this.checked);document.getElementById('blq-upgrade').classList.toggle('hidden',!this.checked)">
+        <span>¿Va a reclutar al anfitrión?</span>
+      </label>
+      <div id="blq-upgrade" class="${p.recluta_anfitrion?'':'hidden'}" style="margin-top:8px;padding:10px;background:var(--gray-50);border-radius:var(--radius-sm);">
+        <label style="font-size:.82rem;font-weight:700;color:var(--gray-600);">¿El anfitrión compra TM7?</label>
+        <div class="radio-group" id="c-upgrade">
+          ${['Sí','No'].map(v=>`<label class="radio-option ${p.upgrade_anfitrion===v?'selected':''}"><input type="radio" name="c-u" value="${v}" ${p.upgrade_anfitrion===v?'checked':''} onchange="markRadio('c-upgrade')">${v}</label>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="check-card ${p.zona_target?'selected':''}" id="chk-zona">
+        <input type="checkbox" id="c-zona" ${p.zona_target?'checked':''} onchange="document.getElementById('chk-zona').classList.toggle('selected',this.checked)">
+        <span>🎯 Vive en zona target</span>
+      </label>
+    </div>
+    <hr class="divider">
+    <strong class="text-sm">Datos por invitado:</strong>
+    ${invitados.map((inv,i) => `
+      <div class="card mt-8">
+        <strong class="text-sm">${inv.nombre}</strong>
+        ${inv.completado ? `
+          <div class="badge badge-green mt-8">✅ Ya completó el formulario</div>
+          <div class="text-sm mt-8">Quiere comprar: ${inv.quiere_comprar?'Sí':'No'} ${inv.quiere_comprar?'· '+inv.forma_pago:''}</div>
+        ` : `
+          <div class="form-group mt-8"><label style="font-size:.78rem;">¿Le gustaría tener su Thermomix?</label>
+            <div class="radio-group" id="iq-${i}">
+              <label class="radio-option"><input type="radio" name="iq-${i}" value="si" onchange="markRadio('iq-${i}');document.getElementById('ip-${i}').classList.remove('hidden');document.getElementById('io-${i}').classList.add('hidden')">Sí</label>
+              <label class="radio-option"><input type="radio" name="iq-${i}" value="no" onchange="markRadio('iq-${i}');document.getElementById('io-${i}').classList.remove('hidden');document.getElementById('ip-${i}').classList.add('hidden')">No</label>
+            </div>
+          </div>
+          <div id="ip-${i}" class="hidden">
+            <div class="form-group"><label style="font-size:.78rem;">¿Cómo pagaría?</label>
+              <div class="radio-group" id="ipago-${i}">
+                ${['Contado','Cuotas','A definir'].map(v=>`<label class="radio-option"><input type="radio" name="ipago-${i}" value="${v}" onchange="markRadio('ipago-${i}')">${v}</label>`).join('')}
+              </div>
+            </div>
+          </div>
+          <div id="io-${i}" class="hidden">
+            <div class="form-group"><label style="font-size:.78rem;">¿Cuál es la objeción?</label>
+              <textarea id="iobj-${i}" style="min-height:60px;" placeholder="Describir..."></textarea>
+            </div>
+          </div>
+        `}
+      </div>
+    `).join('')}
+    <button class="btn btn-primary btn-block mt-12" onclick="cerrarParty('${p.id}')">✅ Cerrar ThermoParty</button>
+    <button class="btn btn-secondary btn-block" onclick="realizarState.paso=2;renderRealizarModal()">← Atrás</button>
+  `;
+}
+
+function markRadio(containerId) {
+  document.querySelectorAll(`#${containerId} .radio-option`).forEach(opt => {
+    opt.classList.toggle('selected', opt.querySelector('input')?.checked || false);
+  });
+}
+
+async function cerrarParty(pid) {
+  const duracion = parseInt(document.getElementById('c-duracion')?.value) || 0;
+  const cree_ventas = document.querySelector('input[name="c-v"]:checked')?.value || '';
+  const recluta = document.getElementById('c-reclutar')?.checked || false;
+  const upgrade = document.querySelector('input[name="c-u"]:checked')?.value || '';
+  const zona_target = document.getElementById('c-zona')?.checked || false;
+
+  const invitados = realizarState.invitados.map((inv, i) => {
+    if (!inv.completado) {
+      return {
+        id: inv.id,
+        quiere_comprar: document.querySelector(`input[name="iq-${i}"]:checked`)?.value === 'si',
+        forma_pago: document.querySelector(`input[name="ipago-${i}"]:checked`)?.value || null,
+        objecion: document.getElementById(`iobj-${i}`)?.value || ''
+      };
+    }
+    return { id: inv.id };
+  });
+
+  showLoading('Cerrando ThermoParty...');
+  try {
+    await PATCH(`/api/parties/${pid}/realizar`, {
+      foto: realizarState.foto,
+      duracion, cree_ventas,
+      recluta_anfitrion: recluta,
+      upgrade_anfitrion: upgrade,
+      zona_target,
+      invitados
+    });
+    closeModal();
+    alert('✅ ¡ThermoParty cerrada exitosamente!');
+    await renderParties(document.getElementById('main-content'));
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+// ── VENTAS POSTERIORES ─────────────────────────────────────
+async function openVentasPosteriores(pid) {
+  showLoading();
+  try {
+    const p = await GET(`/api/parties/${pid}`);
+    const invitados = Array.isArray(p.invitados) ? p.invitados : [];
+    const ventas = Array.isArray(p.ventas) ? p.ventas : [];
+
+    openModal(`
+      <div class="modal-title">💰 Ventas posteriores</div>
+      <strong class="text-sm">Registrar nueva venta:</strong>
+      <div class="form-group mt-8"><label>¿Quién compró?</label>
+        <select id="vp-comprador">
+          <option value="anfitrion|${p.anfitrion_nombre}">🏠 Anfitrión: ${p.anfitrion_nombre}</option>
+          ${invitados.map(i => `<option value="${i.id}|${i.nombre}">${i.nombre}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Número de OV *</label><input id="vp-ov" placeholder="Número de OV"></div>
+      <button class="btn btn-primary btn-block" onclick="guardarVentaPosterior('${pid}')">💾 Guardar venta</button>
+      ${ventas.length ? `<hr class="divider"><strong class="text-sm">Ventas registradas (${ventas.length}):</strong>${ventas.map(v=>`<div class="list-item green mt-8"><div class="list-item-title">${v.comprador_nombre||'—'}</div><div class="list-item-sub">OV: ${v.ov} · ${fmtDate(v.fecha)}</div></div>`).join('')}` : ''}
+      <button class="btn btn-secondary btn-block mt-12" onclick="closeModal()">Cerrar</button>
+    `);
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+async function guardarVentaPosterior(pid) {
+  const sel = document.getElementById('vp-comprador').value.split('|');
+  const ov = document.getElementById('vp-ov').value.trim();
+  if (!ov) { alert('Ingresá el número de OV'); return; }
+  showLoading('Guardando venta...');
+  try {
+    await POST('/api/ventas', {
+      party_id: pid,
+      comprador_id: sel[0],
+      comprador_nombre: sel[1],
+      ov
+    });
+    await openVentasPosteriores(pid);
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+// ══════════════════════════════════════════════════════════
+//  PANEL GERENTE
+// ══════════════════════════════════════════════════════════
+async function renderPanel(el) {
+  showLoading();
+  try {
+    const [parties, cutters] = await Promise.all([GET('/api/parties'), GET('/api/cutters')]);
+    const agendadas = parties.filter(p => p.estado === 'Agendada').sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+    const realizadas = parties.filter(p => p.estado === 'Realizada y cerrada' || p.estado === 'Con ventas posteriores');
+    const cuttersPend = cutters.filter(c => c.estado === 'Pendiente');
+
+    el.innerHTML = `
+      <div class="section-title">📦 Panel de gestión</div>
+      ${cuttersPend.length ? `
+        <div class="alert alert-warning">
+          <div class="alert-title">🔪 Cutters pendientes (${cuttersPend.length})</div>
+          ${cuttersPend.map(c=>`<div class="text-sm mt-8">🏠 <strong>${c.anfitrion_nombre}</strong> — upgrade TM7 · OV: ${c.ov||'—'}
+            <br><button class="btn btn-sm btn-primary mt-8" onclick="doEntregarCutter('${c.id}')">✅ Entregar a agente</button>
+          </div>`).join('')}
+        </div>` : ''}
+      <div class="section-title" style="margin-top:8px;">🎁 Regalos pendientes de entrega</div>
+      ${agendadas.length ? `
+        <div class="table-wrap">
+          <table>
+            <tr><th>Fecha</th><th>Agente</th><th>Anfitrión</th><th>Tel</th><th>Modelo</th><th>Regalo</th><th>Acción</th></tr>
+            ${agendadas.map(p=>`<tr>
+              <td>${fmtDate(p.fecha)}</td><td>${p.agente_nombre||'—'}</td><td>${p.anfitrion_nombre}</td>
+              <td>${p.telefono}</td><td>${p.modelo_tm||'—'}</td><td>${p.regalo||'—'}</td>
+              <td><button class="btn btn-sm btn-primary" onclick="confirmarEntregaRegalo('${p.id}')">Entregar</button></td>
+            </tr>`).join('')}
+          </table>
+        </div>` : '<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">Sin regalos pendientes</div></div>'}
+      <div class="section-title">📊 Resumen</div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num">${agendadas.length}</div><div class="stat-label">Regalos pendientes</div></div>
+        <div class="stat-card"><div class="stat-num">${realizadas.length}</div><div class="stat-label">Realizadas</div></div>
+        <div class="stat-card"><div class="stat-num">${cuttersPend.length}</div><div class="stat-label">Cutters pendientes</div></div>
+        <div class="stat-card"><div class="stat-num">${parties.filter(p=>p.estado==='No realizada').length}</div><div class="stat-label">No realizadas</div></div>
+      </div>
+    `;
+    // guardar en cache para el modal de entrega
+    window._partiesList = parties;
+  } catch (err) {
+    el.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+  } finally { hideLoading(); }
+}
+
+async function doEntregarCutter(cid) {
+  showLoading('Registrando entrega...');
+  try {
+    await PATCH(`/api/cutters/${cid}/entregar`, {});
+    await renderPanel(document.getElementById('main-content'));
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+// ══════════════════════════════════════════════════════════
+//  RANKINGS
+// ══════════════════════════════════════════════════════════
+async function renderRankings(el) {
+  showLoading();
+  try {
+    const [agentes, equipos, parties, prospectos] = await Promise.all([
+      getD365Agentes(), getD365Equipos(), GET('/api/parties'), GET('/api/prospectos')
+    ]);
+    const rol = currentUser.rol;
+
+    function stats(agenteId) {
+      const pros = prospectos.filter(p => p.agente_id === agenteId);
+      const pars = parties.filter(p => p.agente_id === agenteId);
+      return {
+        prospectos: pros.length,
+        agendadas: pars.filter(p => p.estado !== 'No realizada').length,
+        realizadas: pars.filter(p => p.estado === 'Realizada y cerrada' || p.estado === 'Con ventas posteriores').length
+      };
+    }
+
+    let agsVis = agentes;
+    if (rol === 'Team Leader') agsVis = agentes.filter(a => a.equipoId === currentUser.equipoId);
+    else if (rol === 'Gerente') agsVis = agentes.filter(a => {
+      const eq = equipos.find(e => e.id === a.equipoId);
+      return eq && eq.localId === currentUser.local_id;
+    });
+
+    const rankAg = agsVis.map(a => ({ ...a, ...stats(a.id) })).sort((a,b) => b.prospectos - a.prospectos);
+    const eqVis = rol === 'Gerente' ? equipos.filter(e => e.localId === currentUser.local_id) : equipos;
+    const rankEq = eqVis.map(eq => {
+      const ags = agentes.filter(a => a.equipoId === eq.id);
+      return {
+        nombre: eq.nombre,
+        prospectos: ags.reduce((s,a)=>s+stats(a.id).prospectos,0),
+        agendadas: ags.reduce((s,a)=>s+stats(a.id).agendadas,0),
+        realizadas: ags.reduce((s,a)=>s+stats(a.id).realizadas,0)
+      };
+    }).sort((a,b) => b.prospectos - a.prospectos);
+
+    el.innerHTML = `
+      <div class="section-title">&#x1F3C6; Rankings de prospecci&#xF3;n</div>
+      <div class="card">
+        <div class="card-title">Por agente</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>#</th><th>Agente</th><th>Equipo</th><th>Prospectos</th><th>Agendadas</th><th>Realizadas</th></tr>
+            ${rankAg.map((a,i)=>`<tr><td>${i+1}</td><td>${a.nombre}</td><td>${a.equipoNombre||'&#x2014;'}</td><td><strong>${a.prospectos}</strong></td><td>${a.agendadas}</td><td>${a.realizadas}</td></tr>`).join('')}
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Por equipo</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>#</th><th>Equipo</th><th>Prospectos</th><th>Agendadas</th><th>Realizadas</th></tr>
+            ${rankEq.map((e,i)=>`<tr><td>${i+1}</td><td>${e.nombre}</td><td><strong>${e.prospectos}</strong></td><td>${e.agendadas}</td><td>${e.realizadas}</td></tr>`).join('')}
+          </table>
+        </div>
+      </div>
+    `;
+  } catch (err) {
+    el.innerHTML = `<div class="alert alert-danger">Error al cargar rankings: ${err.message}</div>`;
+  } finally { hideLoading(); }
+}
+
+// ══════════════════════════════════════════════════════════
+//  REPORTES
+// ══════════════════════════════════════════════════════════
+let currentReporte = 1;
+
+async function renderReportes(el) {
+  const rol = currentUser.rol;
+  const tabs = [
+    {id:1,label:'ThermoParties'},{id:2,label:'Regalos'},{id:3,label:'Por equipo'},
+  ];
+  if (rol==='Gerente'||rol==='Head Comercial') {
+    tabs.push({id:4,label:'Gift sin cierre'},{id:6,label:'Cutters'});
+  }
+  if (rol==='Team Leader'||rol==='Gerente'||rol==='Head Comercial') {
+    tabs.push({id:5,label:'Prospecci\u00f3n'});
+  }
+
+  el.innerHTML = `
+    <div class="section-title">&#x1F4CA; Reportes</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+      ${tabs.map(t=>`<button class="btn btn-sm ${currentReporte===t.id?'btn-primary':'btn-secondary'}" onclick="currentReporte=${t.id};renderReportes(document.getElementById('main-content'))">${t.label}</button>`).join('')}
+    </div>
+    <div id="reporte-body"><div class="empty"><div class="spinner" style="margin:40px auto;"></div></div></div>
+  `;
+  await cargarReporte();
+}
+
+async function cargarReporte() {
+  const el = document.getElementById('reporte-body');
+  if (!el) return;
+  try {
+    switch(currentReporte) {
+      case 1: el.innerHTML = await buildR1(); break;
+      case 2: el.innerHTML = await buildR2(); break;
+      case 3: el.innerHTML = await buildR3(); break;
+      case 4: el.innerHTML = await buildR4(); break;
+      case 5: el.innerHTML = await buildR5(); break;
+      case 6: el.innerHTML = await buildR6(); break;
+    }
+  } catch (err) { el.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`; }
+}
+
+async function buildR1() {
+  const [parties, ventas] = await Promise.all([GET('/api/parties'), GET('/api/ventas')]);
+  const rows = parties
+    .filter(p => p.estado==='Realizada y cerrada'||p.estado==='Con ventas posteriores')
+    .map(p => {
+      const invs = Array.isArray(p.invitados) ? p.invitados : [];
+      const vEvento = invs.filter(i=>i.quiere_comprar).length;
+      const vPost = ventas.filter(v=>v.party_id===p.id).length;
+      return [fmtDate(p.fecha),p.agente_nombre||'\u2014',p.equipo_nombre||'\u2014',p.local_nombre||'\u2014',p.menu||'\u2014',
+        invs.length,vEvento,vPost,vEvento+vPost,p.recluta_anfitrion?'S\u00ed':'No',p.duracion||'\u2014',p.zona_target?'S\u00ed':'No'];
+    });
+  return buildTable(['Fecha','Agente','Equipo','Local','Men\u00fa','Invitados','Ventas evento','Ventas post.','Total','Reclut.','Duraci\u00f3n','Zona target'],rows,'thermoparties');
+}
+
+async function buildR2() {
+  const parties = await GET('/api/parties');
+  const rows = parties
+    .filter(p => p.fecha_entrega_regalo)
+    .map(p => [fmtDate(p.fecha_entrega_regalo),p.anfitrion_nombre,p.agente_nombre||'\u2014',p.ov||'\u2014',p.modelo_tm||'\u2014',p.regalo||'\u2014']);
+  return buildTable(['Fecha entrega','Anfitri\u00f3n','Agente','OV','Modelo TM','Regalo'],rows,'regalos_entregados');
+}
+
+async function buildR3() {
+  const [agentes, equipos, parties, ventas] = await Promise.all([
+    getD365Agentes(), getD365Equipos(), GET('/api/parties'), GET('/api/ventas')
+  ]);
+  const rows = equipos.map(eq => {
+    const ags = agentes.filter(a => a.equipoId === eq.id);
+    const pars = parties.filter(p => ags.some(a=>a.id===p.agente_id) && (p.estado==='Realizada y cerrada'||p.estado==='Con ventas posteriores'));
+    const totalV = ventas.filter(v => ags.some(a=>a.id===v.agente_id)).length;
+    return [eq.nombre,pars.length,totalV,pars.filter(p=>p.recluta_anfitrion).length];
+  });
+  return buildTable(['Equipo','ThermoParties','Ventas','Reclutados'],rows,'equipos');
+}
+
+async function buildR4() {
+  const parties = await GET('/api/parties?estado=Regalo entregado');
+  const rows = parties
+    .sort((a,b) => new Date(a.fecha)-new Date(b.fecha))
+    .map(p => [fmtDate(p.fecha),p.agente_nombre||'\u2014',p.equipo_nombre||'\u2014',
+      p.anfitrion_nombre,p.telefono,`${p.calle||''} ${p.localidad||''}`.trim(),
+      p.regalo||'\u2014',p.fecha_entrega_regalo?daysDiff(p.fecha_entrega_regalo)+'d':'\u2014']);
+  return buildTable(['Fecha evento','Agente','Equipo','Anfitri\u00f3n','Tel\u00e9fono','Direcci\u00f3n','Regalo','D\u00edas desde entrega'],rows,'regalos_sin_cierre');
+}
+
+async function buildR5() {
+  const [agentes, prospectos, parties] = await Promise.all([getD365Agentes(), GET('/api/prospectos'), GET('/api/parties')]);
+  const rows = agentes.map(ag => {
+    const pros = prospectos.filter(p=>p.agente_id===ag.id);
+    const pars = parties.filter(p=>p.agente_id===ag.id);
+    return [ag.nombre,ag.equipoNombre||'\u2014',pros.length,
+      pars.filter(p=>p.estado!=='No realizada').length,
+      pars.filter(p=>p.estado==='Realizada y cerrada'||p.estado==='Con ventas posteriores').length,
+      pros.filter(p=>p.estado==='No interesado').length];
+  });
+  return buildTable(['Agente','Equipo','Prospectos','Agendadas','Realizadas','No interesados'],rows,'prospeccion');
+}
+
+async function buildR6() {
+  const cutters = await GET('/api/cutters');
+  const rows = cutters.map(c => [fmtDate(c.fecha_venta),c.agente_id,c.anfitrion_nombre,c.telefono||'\u2014',c.ov||'\u2014',c.estado,fmtDate(c.fecha_entrega)]);
+  return buildTable(['Fecha venta','Agente','Anfitri\u00f3n','Tel\u00e9fono','OV','Estado','Fecha entrega'],rows,'cutters');
+}
+
+function buildTable(headers, rows, csvName) {
+  if (!rows.length) return '<div class="empty"><div class="empty-icon">&#x1F4CA;</div><div class="empty-text">Sin datos</div></div>';
+  return `
+    <button class="btn btn-secondary btn-sm" onclick="exportCSV(${JSON.stringify(headers)},${JSON.stringify(rows)},'${csvName}')">&#x2B07; Exportar CSV</button>
+    <div class="table-wrap mt-8">
+      <table>
+        <tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr>
+        ${rows.map(r=>`<tr>${r.map(c=>`<td>${c??'\u2014'}</td>`).join('')}</tr>`).join('')}
+      </table>
+    </div>
+  `;
+}
+
+function exportCSV(headers, rows, name) {
+  const esc = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const csv = [headers.map(esc).join(','), ...rows.map(r=>r.map(esc).join(','))].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
+  a.download = name + '.csv';
+  a.click();
+}
+
+// ══════════════════════════════════════════════════════════
+//  CONFIG (Head Comercial)
+// ══════════════════════════════════════════════════════════
+async function renderConfig(el) {
+  showLoading();
+  try {
+    const cfg = await GET('/api/config');
+    const menus   = Array.isArray(cfg.menus)   ? cfg.menus   : JSON.parse(cfg.menus   || '[]');
+    const regalos = Array.isArray(cfg.regalos) ? cfg.regalos : JSON.parse(cfg.regalos || '[]');
+
+    el.innerHTML = `
+      <div class="section-title">&#x2699;&#xFE0F; Configuraci\u00f3n</div>
+      <div class="card">
+        <div class="card-title">Men\u00fas disponibles</div>
+        ${menus.map((m,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--gray-50);border-radius:8px;margin-bottom:6px;">
+          <span class="text-sm font-bold">${m}</span>
+          <button class="btn btn-sm btn-danger" onclick="eliminarConfigItem('menus',${i},'${encodeURIComponent(JSON.stringify(menus))}','${encodeURIComponent(JSON.stringify(regalos))}')">&#x1F5D1;</button>
+        </div>`).join('')}
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <input type="text" id="nuevo-menu" placeholder="Nuevo men\u00fa">
+          <button class="btn btn-primary btn-sm" onclick="agregarConfigItem('menus')">+</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Regalos disponibles</div>
+        ${regalos.map((r,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--gray-50);border-radius:8px;margin-bottom:6px;">
+          <span class="text-sm font-bold">${r}</span>
+          <button class="btn btn-sm btn-danger" onclick="eliminarConfigItem('regalos',${i},'${encodeURIComponent(JSON.stringify(menus))}','${encodeURIComponent(JSON.stringify(regalos))}')">&#x1F5D1;</button>
+        </div>`).join('')}
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <input type="text" id="nuevo-regalo" placeholder="Nuevo regalo">
+          <button class="btn btn-primary btn-sm" onclick="agregarConfigItem('regalos')">+</button>
+        </div>
+      </div>
+    `;
+  } catch (err) {
+    el.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+  } finally { hideLoading(); }
+}
+
+async function agregarConfigItem(tipo) {
+  const val = document.getElementById('nuevo-' + (tipo === 'menus' ? 'menu' : 'regalo')).value.trim();
+  if (!val) return;
+  showLoading('Guardando...');
+  try {
+    const cfg = await GET('/api/config');
+    const arr = Array.isArray(cfg[tipo]) ? cfg[tipo] : JSON.parse(cfg[tipo] || '[]');
+    arr.push(val);
+    await PUT(`/api/config/${tipo}`, { valor: arr });
+    delete _cache['config'];
+    await renderConfig(document.getElementById('main-content'));
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+async function eliminarConfigItem(tipo, idx, menusEnc, regalosEnc) {
+  showLoading('Guardando...');
+  try {
+    const arr = JSON.parse(decodeURIComponent(tipo === 'menus' ? menusEnc : regalosEnc));
+    arr.splice(idx, 1);
+    await PUT(`/api/config/${tipo}`, { valor: arr });
+    delete _cache['config'];
+    await renderConfig(document.getElementById('main-content'));
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+// ══════════════════════════════════════════════════════════
+//  MODULO 2 - VISTA DEL INVITADO (QR standalone)
+// ══════════════════════════════════════════════════════════
+const DESEOS = [
+  {emoji:'\u{1F4A1}',texto:'Inspiraci\u00f3n'},{emoji:'\u{1F957}',texto:'Comer m\u00e1s sano'},
+  {emoji:'\u23F1\uFE0F',texto:'Que me tome menos tiempo'},{emoji:'\u{1F468}\u200D\u{1F373}',texto:'Cocinar como un Chef'},
+  {emoji:'\u{1F91D}',texto:'Delegarla o compartirla'},{emoji:'\u{1F4D6}',texto:'Recetas para m\u00ed'},
+  {emoji:'\u{1F3E0}',texto:'Cocinar m\u00e1s en casa'},
+];
+
+async function checkInvitadoView() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('vista') !== 'invitado') return false;
+
+  const partyId = params.get('demo');
+  const invId = params.get('invitado');
+  if (!partyId || !invId) return false;
+
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('invitado-screen').classList.remove('hidden');
+
+  const el = document.getElementById('invitado-content');
+  el.innerHTML = '<div class="empty"><div class="spinner" style="margin:40px auto;"></div></div>';
+
+  try {
+    const data = await GET(`/api/invitado/${partyId}/${invId}`, true);
+    if (!data.invitado.completado) {
+      renderInvitadoParte1(data.party, data.invitado);
+    } else {
+      renderInvitadoParte2(data.party, data.invitado);
+    }
+  } catch (err) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">\u274C</div><div class="empty-text">Evento no encontrado</div></div>`;
+  }
+  return true;
+}
+
+function renderInvitadoParte1(party, inv) {
+  const el = document.getElementById('invitado-content');
+  const deseos = Array.isArray(inv.deseos) ? inv.deseos : (typeof inv.deseos === 'string' ? JSON.parse(inv.deseos||'[]') : []);
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-title">\u{1F44B} \u00a1Bienvenido/a ${inv.nombre}!</div>
+      <p class="text-sm" style="color:var(--gray-600);">Cont\u00e1nos un poco sobre vos.</p>
+    </div>
+    <div class="card">
+      <div class="form-group"><label>Nombre completo</label><input id="inv-nombre-full" value="${inv.nombre}" placeholder="Tu nombre y apellido"></div>
+      <div class="form-group"><label>Zona / Barrio</label><input id="inv-zona" value="${inv.zona||''}" placeholder="Palermo, San Isidro..."></div>
+      <div class="form-group"><label>\u00bfTen\u00e9s Thermomix?</label>
+        <div class="radio-group" id="inv-tiene-tm">
+          <label class="radio-option ${inv.tiene_tm==='si'?'selected':''}"><input type="radio" name="inv-tm" value="si" ${inv.tiene_tm==='si'?'checked':''} onchange="markRadio('inv-tiene-tm');document.getElementById('inv-modelo-block').classList.remove('hidden')">S\u00ed</label>
+          <label class="radio-option ${inv.tiene_tm==='no'?'selected':''}"><input type="radio" name="inv-tm" value="no" ${inv.tiene_tm!=='si'?'checked':''} onchange="markRadio('inv-tiene-tm');document.getElementById('inv-modelo-block').classList.add('hidden')">No</label>
+        </div>
+      </div>
+      <div id="inv-modelo-block" class="${inv.tiene_tm==='si'?'':'hidden'}">
+        <div class="form-group"><label>\u00bfCu\u00e1l modelo?</label>
+          <div class="radio-group" id="inv-modelo-radio">
+            ${['TM5','TM6','TM7'].map(m=>`<label class="radio-option ${inv.modelo_tm_invitado===m?'selected':''}"><input type="radio" name="inv-modelo" value="${m}" ${inv.modelo_tm_invitado===m?'checked':''} onchange="markRadio('inv-modelo-radio')">${m}</label>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="form-group"><label>\u00bfCu\u00e1ntos son en tu familia?</label>
+        <select id="inv-familia">
+          ${['1','2','3','4','5','6+'].map(n=>`<option ${inv.familia===n?'selected':''}>${n}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:4px;">\u00a1Cont\u00e1nos de vos!</div>
+      <p class="text-sm" style="color:var(--gray-600);margin-bottom:12px;">Si pudieras pedir cualquier cosa en relaci\u00f3n con la cocina\u2026 \u00bfQu\u00e9 pedir\u00edas? <strong>(eleg\u00ed 2 o 3)</strong></p>
+      <div class="wish-grid">
+        ${DESEOS.map(d=>`<div class="wish-card ${deseos.includes(d.texto)?'selected':''}" onclick="toggleWish(this)">
+          <div class="wish-emoji">${d.emoji}</div>
+          <div class="wish-text">${d.texto}</div>
+        </div>`).join('')}
+      </div>
+      <div id="deseos-error" class="text-sm text-red hidden" style="margin-top:8px;">Eleg\u00ed entre 2 y 3 opciones</div>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="guardarInvitadoParte1('${party.id}','${inv.id}')">Continuar \u2192</button>
+  `;
+}
+
+function toggleWish(el) {
+  const selected = document.querySelectorAll('.wish-card.selected').length;
+  if (el.classList.contains('selected')) { el.classList.remove('selected'); }
+  else if (selected < 3) { el.classList.add('selected'); }
+}
+
+async function guardarInvitadoParte1(partyId, invId) {
+  const nombre = document.getElementById('inv-nombre-full').value.trim();
+  const zona = document.getElementById('inv-zona').value.trim();
+  const tiene_tm = document.querySelector('input[name="inv-tm"]:checked')?.value || 'no';
+  const modelo_tm_invitado = document.querySelector('input[name="inv-modelo"]:checked')?.value || '';
+  const familia = document.getElementById('inv-familia').value;
+  const deseos = [...document.querySelectorAll('.wish-card.selected')].map(c => c.querySelector('.wish-text').textContent);
+
+  if (deseos.length < 2 || deseos.length > 3) {
+    document.getElementById('deseos-error').classList.remove('hidden'); return;
+  }
+  showLoading('Guardando...');
+  try {
+    await api('PATCH', `/api/parties/${partyId}/invitados/${invId}`,
+      { nombre, zona, tiene_tm, modelo_tm_invitado, familia, deseos, completado: true }, true);
+    const data = await GET(`/api/invitado/${partyId}/${invId}`, true);
+    renderInvitadoParte2(data.party, data.invitado);
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+function renderInvitadoParte2(party, inv) {
+  const el = document.getElementById('invitado-content');
+  const abierta = party.estado !== 'Realizada y cerrada' && party.estado !== 'Con ventas posteriores';
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-title">\u2705 \u00a1Gracias ${inv.nombre}!</div>
+      ${abierta
+        ? `<p class="text-sm" style="color:var(--gray-600);">Complet\u00e1 los datos del c\u00e1lculo cuando la agente te los muestre.</p>`
+        : `<p class="text-sm" style="color:var(--gray-600);">El evento ya finaliz\u00f3. \u00a1Gracias por participar!</p>`}
+    </div>
+    ${abierta ? `
+    <div class="card">
+      <div class="form-group"><label>\u{1F4B0} Ahorro calculado $</label>
+        <input type="number" id="inv2-ahorro" value="${inv.ahorro||''}" placeholder="Monto calculado en la demo">
+      </div>
+      <div class="form-group"><label>\u00bfTe gustar\u00eda tener tu Thermomix?</label>
+        <div class="radio-group" id="inv2-quiere">
+          <label class="radio-option ${inv.quiere_comprar?'selected':''}"><input type="radio" name="inv2-q" value="si" ${inv.quiere_comprar?'checked':''} onchange="markRadio('inv2-quiere');document.getElementById('inv2-si-b').classList.remove('hidden');document.getElementById('inv2-no-b').classList.add('hidden')">S\u00ed</label>
+          <label class="radio-option"><input type="radio" name="inv2-q" value="no" ${!inv.quiere_comprar&&inv.quiere_comprar!==null?'checked':''} onchange="markRadio('inv2-quiere');document.getElementById('inv2-no-b').classList.remove('hidden');document.getElementById('inv2-si-b').classList.add('hidden')">No</label>
+        </div>
+      </div>
+      <div id="inv2-si-b" class="${inv.quiere_comprar?'':'hidden'}">
+        <div class="form-group"><label>\u00bfC\u00f3mo te viene mejor pagarla?</label>
+          <div class="radio-group" id="inv2-pago">
+            ${['Contado','Cuotas'].map(v=>`<label class="radio-option ${inv.forma_pago===v?'selected':''}"><input type="radio" name="inv2-pago" value="${v}" ${inv.forma_pago===v?'checked':''} onchange="markRadio('inv2-pago')">${v}</label>`).join('')}
+          </div>
+        </div>
+        <div class="form-group"><label>\u00bfTe gustar\u00eda sumarte al equipo como agente comercial?</label>
+          <div class="radio-group" id="inv2-ag">
+            ${['S\u00ed','No'].map(v=>`<label class="radio-option ${inv.quiere_ser_agente===v?'selected':''}"><input type="radio" name="inv2-ag" value="${v}" ${inv.quiere_ser_agente===v?'checked':''} onchange="markRadio('inv2-ag')">${v}</label>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div id="inv2-no-b" class="hidden">
+        <div class="form-group"><label>\u00bfQu\u00e9 te frena?</label><textarea id="inv2-frena" placeholder="Cont\u00e1nos...">${inv.frena||''}</textarea></div>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="guardarInvitadoParte2('${party.id}','${inv.id}')">&#x1F4BE; Guardar</button>
+    </div>` : ''}
+  `;
+}
+
+async function guardarInvitadoParte2(partyId, invId) {
+  const ahorro = document.getElementById('inv2-ahorro')?.value;
+  const q = document.querySelector('input[name="inv2-q"]:checked')?.value;
+  const pago = document.querySelector('input[name="inv2-pago"]:checked')?.value || null;
+  const agente = document.querySelector('input[name="inv2-ag"]:checked')?.value || null;
+  const frena = document.getElementById('inv2-frena')?.value || '';
+  showLoading('Guardando...');
+  try {
+    await api('PATCH', `/api/parties/${partyId}/invitados/${invId}`,
+      { ahorro, quiere_comprar: q === 'si', forma_pago: pago, quiere_ser_agente: agente, frena }, true);
+    document.getElementById('invitado-content').innerHTML = `
+      <div class="card" style="text-align:center;margin-top:20px;">
+        <div style="font-size:3rem;margin-bottom:8px;">\u{1F389}</div>
+        <div class="card-title">\u00a1Listo! Gracias por completar tus datos.</div>
+        <p class="text-sm" style="color:var(--gray-600);margin-top:8px;">La agente tiene toda la informaci\u00f3n para ayudarte.</p>
+      </div>`;
+  } catch (err) { showError(err.message); }
+  finally { hideLoading(); }
+}
+
+// ══════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════
+(async () => {
+  if (await checkInvitadoView()) return;
+
+  const token = getToken();
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.exp * 1000 > Date.now()) {
+        currentUser = payload;
+        afterLogin();
+        return;
+      }
+    } catch {}
+    clearToken();
+  }
+})();
+</script>
+</body>
+</html>
