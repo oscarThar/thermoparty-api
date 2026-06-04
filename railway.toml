@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "node src/db/migrate.js"
+startCommand = "node src/index.js"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
 
