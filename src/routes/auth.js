@@ -114,6 +114,7 @@ router.post('/login-backoffice', async (req, res) => {
   if (!usuario?.trim() || !password) {
     return res.status(400).json({ error: 'Usuario y contraseña requeridos' });
   }
+  console.log("USUARIO Y PASSWORD: ", usuario, password);
 
   try {
     const user = await dynamics.loginBackoffice(usuario.trim(), password);

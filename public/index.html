@@ -307,6 +307,7 @@ async function loginByPass() {
   try {
     const res = await POST('/api/auth/login-backoffice', { usuario, password });
     setToken(res.token);
+    console.log(res)
     currentUser = res.user;
     afterLogin();
   } catch (err) {
@@ -328,12 +329,16 @@ function showLoginScreen() {
 function afterLogin() {
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
+
+  // Backoffice tiene `usuario` (email), colaborador tiene `nombre`
+  const displayName = currentUser.nombre || currentUser.usuario || '—';
+
   document.getElementById('topbar-user').innerHTML =
-    `<strong>${currentUser.nombre}</strong><br>${currentUser.rol}`;
+    `<strong>${displayName}</strong><br>${currentUser.rol}`;
+
   buildNav();
   checkVencidas();
 }
-
 function logout() {
   clearToken();
   currentUser = null;
@@ -714,7 +719,8 @@ async function openAgendarParty(pid = null, prospecto = null) {
 }
 
 async function validarOV() {
-  const ov = document.getElementById('tp-ov').value.trim();
+  const ov = document.getElementById('tp-ov').value;
+  console.log(ov, "ov-number")
   if (!ov) { alert('Ingresá el número de OV'); return; }
   const el = document.getElementById('ov-result');
   el.innerHTML = '⏳ Verificando...'; el.classList.remove('hidden');

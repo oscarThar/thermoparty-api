@@ -40,7 +40,7 @@ async function d365Get(endpoint, params = {}) {
     }
   );
 
-  //console.log(res.data, "d365Get");
+  console.log(res.data, "d365Get");
   return res.data;
 }
 
@@ -192,6 +192,8 @@ async function loginBackoffice(usuario, password) {
     $top: 1,
   });
 
+  console.log("DATA EN LOGIN BACKOOFICE", data.value);
+
   const user = (data.value || [])[0];
   if (!user) return null; // usuario no encontrado
 
@@ -243,20 +245,49 @@ async function getEquipos() {
 
 async function validarOV(numeroOV) {
   try {
-    const data = await d365Get('salesorders', {
-      $select: 'salesorderid,ordernumber,name,totalamount,statecode',
-      $filter: `ordernumber eq '${numeroOV}'`,
+    const data = await d365Get('acc_ordendeventas', {
+      $select: [
+        'acc_ordendeventaid',
+        'acc_name',
+        'acc_erpid',
+        'acc_razon_social',
+        'acc_cuit',
+        'acc_pagado',
+        'acc_monto_total',
+        'acc_saldada',
+        'acc_fecha_entrega',
+        'acc_numerodeserie',
+        'acc_estado_orden_de_venta',
+        'statecode',
+        '_acc_colaboradorid_value',
+        '_acc_clienteid_value',
+      ].join(','),
+      $filter: `acc_name eq '${numeroOV}' or acc_erpid eq '${numeroOV}'`,
       $top: 1,
     });
+
     const ov = (data.value || [])[0];
     if (!ov) return { valida: false, mensaje: 'OV no encontrada' };
+
+    if (ov.statecode !== 0) {
+      return { valida: false, mensaje: `OV inactiva (statecode: ${ov.statecode})` };
+    }
+
     return {
-      valida:  true,
-      id:      ov.salesorderid,
-      numero:  ov.ordernumber,
-      nombre:  ov.name,
-      monto:   ov.totalamount,
-      estado:  ov.statecode,
+      valida:        true,
+      id:            ov.acc_ordendeventaid,
+      numero:        ov.acc_name,
+      erpId:         ov.acc_erpid,
+      razonSocial:   ov.acc_razon_social,
+      cuit:          ov.acc_cuit,
+      montoPagado:   ov.acc_pagado,
+      montoTotal:    ov.acc_monto_total,
+      saldada:       ov.acc_saldada,
+      fechaEntrega:  ov.acc_fecha_entrega,
+      numeroSerie:   ov.acc_numerodeserie,
+      estadoOV:      ov.acc_estado_orden_de_venta,
+      colaboradorId: ov._acc_colaboradorid_value,
+      clienteId:     ov._acc_clienteid_value,
     };
   } catch (err) {
     console.error('[D365] validarOV:', err.message);

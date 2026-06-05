@@ -10,7 +10,7 @@ router.use(authMiddleware);
 // GET /api/d365/agentes — lista completa (para gerentes/head)
 router.get('/agentes', async (req, res) => {
   try {
-    const agentes = await dynamics.getAgentes();
+    const agentes = await dynamics.getColaboradores();
     res.json(agentes);
   } catch (err) {
     console.error('[d365] getAgentes:', err.message);
@@ -41,6 +41,7 @@ router.get('/equipos', async (req, res) => {
 // GET /api/d365/validar-ov/:numero — valida una OV
 router.get('/validar-ov/:numero', async (req, res) => {
   try {
+    console.log(req.params.numero, "numero de la ov")
     const resultado = await dynamics.validarOV(req.params.numero);
     res.json(resultado);
   } catch (err) {
